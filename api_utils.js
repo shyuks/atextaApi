@@ -14,9 +14,10 @@ module.exports.sendEmail = (recipient, message) => {
 }
 
 module.exports.sendText = (recipient, text) => {
+  console.log(recipient)
   client.sendMessage({
-    to : recipient,
+    to : recipient.contactInfo,
     from: '12134863241',
-    body: `From ${recipient.UserName}'s Atexta Skill: ${text}`
+    body: `From ${recipient.UserName}: ${text} \nSent From Atexta, the Alexa Message Skill`
   })
 }
