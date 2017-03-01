@@ -18,8 +18,8 @@ module.exports.sendEmail = (recipient, message) => {
 module.exports.sendText = (recipient, text) => {
   console.log(recipient, text);
   client.sendMessage({
-    to : '7144864486',
+    to : recipient,
     from: '12134863241',
-    body: `rec:${recipient} txt:${text}`
+    body: `From Atexta: ${text}`
   })
 }
