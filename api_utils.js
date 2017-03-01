@@ -20,6 +20,6 @@ module.exports.sendText = (recipient, text) => {
   client.sendMessage({
     to : recipient,
     from: '12134863241',
-    body: `rec:${recipient} txt:${text}`
+    body: `txt:${text}`
   })
 }
