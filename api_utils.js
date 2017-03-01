@@ -1,17 +1,17 @@
-const keys = require('./keys')
-const mailgun = require('mailgun-js')({apiKey: keys.emailKey, domain: keys.emailDomain});
+const mailgun = require('mailgun-js')({apiKey: process.env.EMAIL_KEY, domain: process.env.EMAIL_DOMAIN});
 const twilio = require('twilio');
-const client = twilio(keys.twilioKey, keys.twilioID);
+const client = twilio(process.env.TWILIO_KEY, process.env.TWILIO_ID);
 
 module.exports.sendEmail = (recipient, message) => {
   let data = {
-    from: 'Mailgun Sandbox <postmaster@sandbox44cda2e06ef8459d8a4b65d5038f6d39.mailgun.org>',
-    to: 'rnesh90@yahoo.com',
-    subject: 'Hello',
-    text: `recipient : ${recipient}, message: ${message}`
+    from: 'MyAtexta.com <postmaster@mg.myatexta.com>',
+    to: recipient,
+    subject: 'Sent from _\'s Atexta skill',
+    text: `message: ${message}`
   };
   mailgun.messages().send(data, function (error, body) {
-  console.log(body);
+    console.log('body is', body);
+    console.log('error is', error)
   });
 }
 
