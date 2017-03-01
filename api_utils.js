@@ -6,20 +6,17 @@ module.exports.sendEmail = (recipient, message) => {
   let data = {
     from: 'MyAtexta.com <postmaster@mg.myatexta.com>',
     to: recipient,
-    subject: 'Sent from _\'s Atexta skill',
+    subject: `Sent from ${recipient.UserName}'s Atexta skill`,
     text: `message: ${message}`
   };
   mailgun.messages().send(data, function (error, body) {
-    console.log('body is', body);
-    console.log('error is', error)
   });
 }
 
 module.exports.sendText = (recipient, text) => {
-  console.log(recipient, text);
   client.sendMessage({
     to : recipient,
     from: '12134863241',
-    body: `From Atexta: ${text}`
+    body: `From ${recipient.UserName}'s Atexta Skill: ${text}`
   })
 }

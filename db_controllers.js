@@ -45,13 +45,13 @@ module.exports.getUserInfo = (token) => {
 
 module.exports.sendText = (groupInfo, message) => {
   groupInfo.forEach(recipient => {
-    utils.sendText(recipient.contactInfo, message);
+    utils.sendText(recipient, message);
   })
 }
 
 module.exports.sendEmail = (groupInfo, message) => {
   groupInfo.forEach(recipient => {
-    utils.sendEmail(recipient.contactInfo, message);
+    utils.sendEmail(recipient, message);
   })
 }
 
@@ -86,7 +86,7 @@ module.exports.GetOrInsertUser = (userInfo) => {
 
 module.exports.getIntentInfo = (inputUserId, commandName) => {
   return new Promise ((resolve, reject) => {
-    db.query('select C.verified, C.id as CommandId, C.name as commandName, C.groupId, G.name as groupName, M.text, M.id as MessageId, R.name as recipientName, R.mediumType, R.contactInfo from Commands C join Messages M on C.messageId = M.id left outer join Groups G on G.id = C.groupId left outer join GroupRecipients GR on GR.groupId = C.groupId left outer join Recipients R on R.id = GR.recipientId where C.userId = ? and UPPER(C.name) = UPPER(?) and C.status = 1', {
+    db.query('select U.name as UserName, C.verified, C.id as CommandId, C.name as commandName, C.groupId, G.name as groupName, M.text, M.id as MessageId, R.name as recipientName, R.mediumType, R.contactInfo from Commands C join Users U on C.userId = U.id join Messages M on C.messageId = M.id left outer join Groups G on G.id = C.groupId left outer join GroupRecipients GR on GR.groupId = C.groupId left outer join Recipients R on R.id = GR.recipientId where C.userId = ? and UPPER(C.name) = UPPER(?) and C.status = 1', {
     replacements: [inputUserId, commandName],
     type: Sequelize.QueryTypes.SELECT
     })
@@ -102,7 +102,7 @@ module.exports.getIntentInfo = (inputUserId, commandName) => {
 
 module.exports.GetSecretIntentInfo = (userEmail, trigger) => {
  return new Promise ((resolve, reject) => {
-   db.query(`select SC.id as SecretCommandId, SC.triggerId, SC.secretMessageId, SC.responseId, SC.verified, SM.text, SR.speech, U.id, U.name, R.name, R.contactInfo, R.mediumType from SecretCommands SC join SecretTriggers ST on SC.triggerId = ST.id join SecretMessages SM on SC.secretMessageId = SM.id join SecretResponses SR on SC.responseId = SR.id join Users U on SC.userId = U.id join GroupRecipients GR on SC.groupId = GR.groupId join Recipients R on GR.recipientId = R.id where U.email = "${userEmail}" and SC.status = 1 and ST.name = "${trigger}"`, {
+   db.query(`select SC.id as SecretCommandId, SC.triggerId, SC.secretMessageId, SC.responseId, SC.verified, SM.text, SR.speech, U.id, U.name as UserName, R.name, R.contactInfo, R.mediumType from SecretCommands SC join SecretTriggers ST on SC.triggerId = ST.id join SecretMessages SM on SC.secretMessageId = SM.id join SecretResponses SR on SC.responseId = SR.id join Users U on SC.userId = U.id join GroupRecipients GR on SC.groupId = GR.groupId join Recipients R on GR.recipientId = R.id where U.email = "${userEmail}" and SC.status = 1 and ST.name = "${trigger}"`, {
      type: Sequelize.QueryTypes.SELECT
    })
    .then(foundSecretCommand => {
@@ -119,7 +119,7 @@ module.exports.GetGroupInfo = (userEmail, groupName, type) => {
  return new Promise ((resolve, reject) => {
   let str = (type === '0' ? '' : "and G.mediumType = ?");
   let rep = (type === '0' ? [userEmail, groupName] : [userEmail, groupName, type]);
-  db.query(`select U.id as userId, R.name, R.contactInfo, R.mediumType from Users U join Groups G on G.userId = U.id join GroupRecipients GR on GR.groupId = G.id join Recipients R on GR.recipientId = R.id where U.email = ? and UPPER(G.name) = UPPER(?) ${str}`,
+  db.query(`select U.id as userId, U.name as UserName, R.name, R.contactInfo, R.mediumType from Users U join Groups G on G.userId = U.id join GroupRecipients GR on GR.groupId = G.id join Recipients R on GR.recipientId = R.id where U.email = ? and UPPER(G.name) = UPPER(?) ${str}`,
   {replacements : rep, type : Sequelize.QueryTypes.SELECT})
   .then(groupInfo => {
     resolve(groupInfo)
