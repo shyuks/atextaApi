@@ -60,6 +60,9 @@ app.get('/triggerQuickCommand', (req, res) => {
               } else if (foundCommand[0].mediumType === 'E') {
                 dc.sendEmail(foundCommand, foundCommand[0].text);
                 res.status(200).send({sendEmail : true})
+              } else if (foundCommand[0].mediumType === 'S') {
+                dc.sendSlack(foundCommand, foundCommand[0].text);
+                res.status(200).send({sendEmail : true})
               } else {
                 res.status(200).send('issue with medium type')
               }
@@ -97,6 +100,9 @@ app.get('/sendToGroup', (req, res) => {
       } else if (groupInfo[0].mediumType === 'E') {
         dc.sendEmail(groupInfo, req.headers.message)
         res.status(200).send({sentEmail : true})
+      } else if (groupInfo[0].mediumType === 'S') {
+        dc.sendSlack(groupInfo, req.headers.message)
+        res.status(200).send({sentEmail : true})
       } else {
         res.status(200).send('issue with getting group info')
       }
@@ -128,6 +134,9 @@ app.get('/sendCustomMessage', (req, res) => {
                 dc.sendText(groupInfo, req.headers.message)
                 res.status(200).send({sentText : true})
               } else if (groupInfo[0].mediumType === 'E') {
+                dc.sendEmail(groupInfo, req.headers.message)
+                res.status(200).send({sentEmail : true})
+              } else if (groupInfo[0].mediumType === 'S') {
                 dc.sendEmail(groupInfo, req.headers.message)
                 res.status(200).send({sentEmail : true})
               } else {
@@ -180,6 +189,9 @@ app.get('/triggerSecretCommand', (req, res) => {
                 res.status(200).send({response : foundSecretCommand[0].speech})
               } else if (foundSecretCommand[0].mediumType === 'E') {
                 dc.sendEmail(foundSecretCommand, foundSecretCommand[0].text)
+                res.status(200).send({response: foundSecretCommand[0].speech})
+              } else if (foundSecretCommand[0].mediumType === 'S') {
+                dc.sendSlack(foundSecretCommand, foundSecretCommand[0].text)
                 res.status(200).send({response: foundSecretCommand[0].speech})
               } else {
                 res.status(200).send('Error sending secret message')

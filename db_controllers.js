@@ -55,6 +55,12 @@ module.exports.sendEmail = (groupInfo, message) => {
   })
 }
 
+module.exports.sendSlack = (groupInfo, message) => {
+  groupInfo.forEach(recipient => {
+    utils.sendSlack(recipient.contactInfo, message);
+  })
+}
+
 module.exports.GetOrInsertUser = (userInfo) => {
   return new Promise ((resolve, reject) => {
     db.query('select * from Users where email = ?', {
