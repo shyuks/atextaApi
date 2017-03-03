@@ -12,6 +12,7 @@
     "node": "7.2.1"
   },
   "dependencies": {
+    "@slack/client": "^3.8.1",
     "axios": "^0.15.3",
     "body-parser": "^1.16.0",
     "dotenv": "^4.0.0",
