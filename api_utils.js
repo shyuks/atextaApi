@@ -5,7 +5,7 @@ const client = twilio(process.env.TWILIO_KEY, process.env.TWILIO_ID);
 const express = require('express');
 const router = express.Router();
 const WebClient = require('@slack/client').WebClient;
-const web = new WebClient(token);
+const web = new WebClient(process.env.SLACK_TOKEN);
 
 module.exports.sendEmail = (recipient, message) => {
   let data = {
